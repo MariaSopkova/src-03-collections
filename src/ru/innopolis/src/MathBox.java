@@ -1,11 +1,15 @@
 package ru.innopolis.src;
 
-import java.util.*;
+import ru.innopolis.src.Annotation.ClearData;
+import ru.innopolis.src.Annotation.Logger;
+
+import java.util.ArrayList;
+import java.util.TreeSet;
 
 /**
  * Задание 3
  */
-public class MathBox {
+public class MathBox implements IMathBox {
     private TreeSet<Integer> mValues;
 
     /**
@@ -27,6 +31,7 @@ public class MathBox {
      * Получить числа, хранящихся в классе
      * @return числа, хранящиеся в классе
      */
+    @Override
     public TreeSet<Integer> getValues(){
         return mValues;
     }
@@ -35,6 +40,7 @@ public class MathBox {
      * Найти сумму элементов
      * @return сумма элементов
      */
+    @Override
     public long summator(){
         long resultSum = 0;
         for(Integer value : mValues){
@@ -49,6 +55,7 @@ public class MathBox {
      * @param divider делитель
      * @return частные
      */
+    @Override
     public ArrayList<Double> splitter(Integer divider){
         if(divider == null || divider == 0)
             return null;
@@ -64,8 +71,45 @@ public class MathBox {
      * @param elementValue значение элемента, которые необходимо удалить
      * @return удалось ли удалить
      */
+    @Override
+    @Logger
     public boolean deleteElement(Integer elementValue){
         return mValues.remove(elementValue);
+    }
+
+    /**
+     * Очистить данные
+     */
+    @Logger
+    public void cleanData() {
+        mValues.clear();
+    }
+
+    @ClearData
+    @Logger
+    public void cleanDataWithAnnotation() {
+
+    }
+
+    /**
+     * Добавить новые данные из массива
+     *
+     * @param newData массив новых данных
+     * @return удалось ли добавить все элементы
+     */
+    @Override
+    @Logger
+    public boolean setNewData(Integer[] newData) {
+        boolean result = true;
+        cleanData();
+        for (Integer element : newData) {
+            if (element != null) {
+                mValues.add(element);
+            } else {
+                result = false;
+            }
+        }
+        return result;
     }
 
     @Override
