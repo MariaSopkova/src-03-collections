@@ -8,7 +8,7 @@ import ru.innopolis.src.MathBoxInvocation;
 import java.lang.reflect.Proxy;
 
 public class ProxyTest {
-    MathBox realMathBox;
+    private MathBox realMathBox;
     private IMathBox mathBoxProxy;
 
     public ProxyTest() {
@@ -24,8 +24,9 @@ public class ProxyTest {
         System.out.println("splitter:" + realMathBox.splitter(2));
         System.out.println();
         System.out.println("Proxy math box");
-        mathBoxProxy.summator();
+        System.out.println(realMathBox);
         mathBoxProxy.splitter(2);
+        mathBoxProxy.deleteElement(5);
         System.out.println();
 
     }

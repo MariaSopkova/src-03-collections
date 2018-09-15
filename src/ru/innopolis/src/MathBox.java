@@ -2,6 +2,7 @@ package ru.innopolis.src;
 
 import ru.innopolis.src.Annotation.ClearData;
 import ru.innopolis.src.Annotation.Logger;
+import ru.innopolis.src.Annotation.ResetData;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -41,6 +42,7 @@ public class MathBox implements IMathBox {
      * @return сумма элементов
      */
     @Override
+    @ResetData
     public long summator(){
         long resultSum = 0;
         for(Integer value : mValues){
@@ -56,6 +58,7 @@ public class MathBox implements IMathBox {
      * @return частные
      */
     @Override
+    @Logger
     public ArrayList<Double> splitter(Integer divider){
         if(divider == null || divider == 0)
             return null;
@@ -85,23 +88,16 @@ public class MathBox implements IMathBox {
         mValues.clear();
     }
 
-    @ClearData
-    @Logger
-    public void cleanDataWithAnnotation() {
-
-    }
-
     /**
      * Добавить новые данные из массива
-     *
      * @param newData массив новых данных
      * @return удалось ли добавить все элементы
      */
     @Override
     @Logger
+    @ClearData
     public boolean setNewData(Integer[] newData) {
         boolean result = true;
-        cleanData();
         for (Integer element : newData) {
             if (element != null) {
                 mValues.add(element);

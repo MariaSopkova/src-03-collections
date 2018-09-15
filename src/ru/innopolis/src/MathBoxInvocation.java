@@ -18,25 +18,31 @@ public class MathBoxInvocation implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Class clazz = mathBox.getClass();
-        if (method.getDeclaredAnnotation(Logger.class) != null) {
-            long startTime = logStartMethodInfo(method, args);
-            Object result = callMethod(method, args, clazz);
+        Method classMethod = null;
+        try{
+            classMethod = getMathBoxMethod(method);
+        } catch(NoSuchMethodException ex) {
+            ex.getStackTrace();
+        }
+        if ( classMethod.getDeclaredAnnotation(Logger.class) != null){
+            long startTime = logStartMethodInfo(method);
+            Object result = callMethod(classMethod, args);
             logFinishMethodInfo(method, result, (System.currentTimeMillis() - startTime));
             return result;
         } else {
-            return callMethod(method, args, clazz);
+            return callMethod(classMethod, args);
         }
     }
 
-    public Object callMethod(Method method, Object[] args, Class clazz) throws Throwable {
+    public Object callMethod(Method method, Object[] args) throws Throwable {
         Annotation[] annotations = method.getDeclaredAnnotations();
         for (Annotation annotation : annotations) {
             if (annotation.annotationType() == ClearData.class) {
                 System.out.println("Clear data in " + method + " method");
                 mathBox.cleanData();
                 System.out.println(mathBox);
-            } else if (annotation.annotationType() == ResetData.class) {
+            }
+            if (annotation.annotationType() == ResetData.class) {
                 System.out.println("Reset data in " + method + " method");
                 mathBox.setNewData(GenerateIntArray.generateArray(10));
                 System.out.println("New data:");
@@ -47,11 +53,8 @@ public class MathBoxInvocation implements InvocationHandler {
         return method.invoke(mathBox, args);
     }
 
-    private long logStartMethodInfo(Method method, Object[] args) {
+    private long logStartMethodInfo(Method method) {
         System.out.println("Start method " + method.getName());
-        if (args != null) {
-            System.out.println("Params: " + args.toString());
-        }
         return System.currentTimeMillis();
     }
 
@@ -61,5 +64,9 @@ public class MathBoxInvocation implements InvocationHandler {
         if (result != null) {
             System.out.println("Result: " + result.toString());
         }
+    }
+
+    private Method getMathBoxMethod(Method method) throws NoSuchMethodException {
+        return mathBox.getClass().getMethod(method.getName(), method.getParameterTypes());
     }
 }
